@@ -142,7 +142,7 @@ class BossView(View):
             await interaction.response.send_message("❌ Timer no encontrado.", ephemeral=True)
             return
 
-        muerte_utc = datetime.utcnow()
+        muerte_utc = datetime.now(timezone.utc).replace(tzinfo=None)
         respawn_min = muerte_utc + timedelta(hours=catalogo["min_h"])
         respawn_max = muerte_utc + timedelta(hours=catalogo["max_h"])
 
@@ -212,7 +212,7 @@ async def registrar_muerte(ctx, *, nombre: str):
         await ctx.send(f"❌ Boss no encontrado. Opciones:\n{lista}")
         return
 
-    muerte_utc = datetime.utcnow()
+    muerte_utc = datetime.now(timezone.utc).replace(tzinfo=None)
     respawn_min = muerte_utc + timedelta(hours=catalogo["min_h"])
     respawn_max = muerte_utc + timedelta(hours=catalogo["max_h"])
 
@@ -251,7 +251,7 @@ async def ver_timers(ctx):
     if not bosses:
         await ctx.send("📭 No hay timers activos.")
         return
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     embed = discord.Embed(title="⏱️ Timers Activos", color=0xFFAA00)
     embed.set_footer(text="Hora Venezuela (UTC-4)")
     activos = []
@@ -311,7 +311,7 @@ async def limpiar_timers(ctx):
 
 @tasks.loop(minutes=1)
 async def check_timers():
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     for key, boss in list(bosses.items()):
         if not boss.get("respawn_min_utc"):
             continue
@@ -396,3 +396,4 @@ async def check_invasion():
                 await canal.send(embed=embed)
 
 bot.run(TOKEN)
+
